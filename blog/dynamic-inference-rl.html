@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inference and Dynamic Decision-Making for Deteriorating Systems · Pablo G. Morato</title>
+  <meta name="description" content="How Bayesian networks and deep multi-agent reinforcement learning can be combined to manage deteriorating engineering systems at the system level, accounting for component dependencies.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚛️</text></svg>">
+  <style>
+    :root {
+      --ink: #1d1d1f; --ink-soft: #6e6e73; --white: #ffffff;
+      --parchment: #f5f5f7; --dark2: #272729;
+      --blue: #0066cc; --blue-bright: #2997ff;
+      --border: rgba(0,0,0,0.08); --r-card: 14px; --r-pill: 980px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 17px; line-height: 1.47; color: var(--ink); background: var(--white); -webkit-font-smoothing: antialiased; }
+
+    /* ── DARK MODE ── */
+    [data-theme="dark"] {
+      --ink: #f0f0f2; --ink-soft: #98989f; --white: #1c1c1e;
+      --parchment: #242426; --dark2: #111113;
+      --blue: #2997ff; --blue-bright: #2997ff;
+      --border: rgba(255,255,255,0.09);
+    }
+    [data-theme="dark"] body { background: var(--white); color: var(--ink); }
+    [data-theme="dark"] article blockquote { background: var(--parchment); }
+    [data-theme="dark"] article code { background: rgba(255,255,255,0.08); }
+    [data-theme="dark"] .callout { background: rgba(41,151,255,0.07); border-color: rgba(41,151,255,0.2); }
+    [data-theme="dark"] .author-block,
+    [data-theme="dark"] .cite-block,
+    [data-theme="dark"] .key-result { background: var(--parchment); }
+
+    /* ── NAV ── */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: 48px; display: flex; align-items: center; padding: 0 28px; background: rgba(29,29,31,0.88); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+    .nav-brand { color: #fff; font-size: 15px; font-weight: 600; letter-spacing: -0.2px; text-decoration: none; flex: 1; }
+    .nav-links { display: flex; gap: 26px; list-style: none; }
+    .nav-links a { color: rgba(255,255,255,0.82); font-size: 13px; text-decoration: none; letter-spacing: -0.1px; transition: color 0.15s; }
+    .nav-links a:hover, .nav-links a.active { color: #fff; }
+    .hamburger { display: none; background: none; border: none; cursor: pointer; color: #fff; font-size: 22px; padding: 4px; }
+    .mobile-menu { display: none; position: fixed; top: 48px; left: 0; right: 0; background: rgba(29,29,31,0.97); backdrop-filter: blur(24px); z-index: 199; padding: 12px 28px 20px; flex-direction: column; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { color: rgba(255,255,255,0.85); font-size: 17px; text-decoration: none; padding: 13px 0; border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .mobile-menu a:last-child { border-bottom: none; }
+    .theme-toggle { background: none; border: none; cursor: pointer; color: rgba(255,255,255,0.7); font-size: 17px; padding: 4px 6px; margin-left: 16px; line-height: 1; transition: color 0.15s; flex-shrink: 0; }
+    .theme-toggle:hover { color: #fff; }
+    @media (max-width: 780px) { .nav-links { display: none; } .hamburger { display: block; } }
+
+    /* ── HERO ── */
+    .article-hero { background: var(--dark2); color: #fff; padding: 96px 28px 72px; text-align: center; }
+    .hero-tags { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
+    .hero-tag { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--blue-bright); padding: 4px 14px; border-radius: var(--r-pill); border: 1px solid rgba(41,151,255,0.35); }
+    .article-title { font-size: clamp(24px, 4vw, 44px); font-weight: 600; letter-spacing: -0.4px; line-height: 1.08; margin-bottom: 20px; max-width: 760px; margin-left: auto; margin-right: auto; }
+    .article-meta { font-size: 14px; color: rgba(255,255,255,0.45); display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── ARTICLE BODY ── */
+    article { max-width: 680px; margin: 0 auto; padding: 64px 28px 80px; }
+    article h2 { font-size: 26px; font-weight: 600; letter-spacing: -0.25px; margin: 48px 0 16px; line-height: 1.2; }
+    article h3 { font-size: 20px; font-weight: 600; letter-spacing: -0.15px; margin: 32px 0 12px; }
+    article p { margin-bottom: 20px; line-height: 1.7; }
+    article p:last-child { margin-bottom: 0; }
+    article a { color: var(--blue); text-decoration: none; }
+    article a:hover { text-decoration: underline; }
+    article strong { font-weight: 600; }
+    article ul, article ol { margin: 0 0 20px 24px; }
+    article li { margin-bottom: 8px; line-height: 1.6; }
+    article blockquote { margin: 32px 0; padding: 20px 24px; border-left: 3px solid var(--blue); background: var(--parchment); border-radius: 0 var(--r-card) var(--r-card) 0; font-size: 18px; font-weight: 300; line-height: 1.6; color: var(--ink); }
+    article code { font-family: "SF Mono", Menlo, Monaco, monospace; font-size: 14px; background: rgba(0,0,0,0.05); padding: 2px 7px; border-radius: 5px; }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+    .callout { background: rgba(0,102,204,0.06); border: 1px solid rgba(0,102,204,0.18); border-radius: var(--r-card); padding: 20px 24px; margin: 28px 0; }
+    .callout-label { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--blue); margin-bottom: 8px; }
+    .callout p { margin-bottom: 0; font-size: 15px; line-height: 1.6; }
+
+    /* Key results row */
+    .key-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; margin: 28px 0; }
+    .key-result { background: var(--parchment); border-radius: var(--r-card); padding: 20px; text-align: center; }
+    .key-result-n { font-size: 32px; font-weight: 600; color: var(--blue); letter-spacing: -1px; line-height: 1; margin-bottom: 6px; }
+    .key-result-label { font-size: 13px; color: var(--ink-soft); line-height: 1.4; }
+
+    /* Figure placeholder */
+    .fig { margin: 36px 0; border-radius: var(--r-card); overflow: hidden; border: 1px solid var(--border); }
+    .fig-placeholder { background: var(--parchment); padding: 40px 24px; text-align: center; font-size: 13px; color: var(--ink-soft); line-height: 1.8; font-family: "SF Mono", Menlo, monospace; }
+    .fig figcaption { padding: 12px 18px; font-size: 13px; color: var(--ink-soft); border-top: 1px solid var(--border); }
+
+    /* Author + cite */
+    .author-block { margin-top: 56px; padding: 28px; background: var(--parchment); border-radius: var(--r-card); display: flex; gap: 20px; align-items: center; }
+    .author-avatar { width: 56px; height: 56px; border-radius: 50%; overflow: hidden; flex-shrink: 0; }
+    .author-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .author-name { font-weight: 600; font-size: 16px; margin-bottom: 3px; }
+    .author-role { font-size: 13px; color: var(--ink-soft); }
+    .cite-block { margin-top: 32px; padding: 20px 24px; background: var(--parchment); border-radius: var(--r-card); }
+    .cite-label { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 10px; }
+    .cite-block pre { background: none; color: var(--ink); padding: 0; font-size: 13px; white-space: pre-wrap; margin: 0; }
+    .post-nav { display: flex; gap: 16px; margin-top: 48px; flex-wrap: wrap; }
+    .post-nav a { color: var(--blue); text-decoration: none; font-size: 15px; }
+    .post-nav a:hover { text-decoration: underline; }
+
+    footer { background: var(--parchment); padding: 28px; text-align: center; font-size: 13px; color: var(--ink-soft); line-height: 1.8; }
+    footer a { color: var(--ink-soft); text-decoration: none; }
+    footer a:hover { color: var(--blue); }
+
+    @media (max-width: 600px) { article { padding: 48px 20px 64px; } }
+  </style>
+</head>
+<body>
+
+<nav id="navbar">
+  <a href="../index.html" class="nav-brand">Pablo G. Morato</a>
+  <ul class="nav-links">
+    <li><a href="../index.html#about">About</a></li>
+    <li><a href="../research.html">Research</a></li>
+    <li><a href="../index.html#publications">Publications</a></li>
+    <li><a href="../blog/index.html" class="active">Blog</a></li>
+    <li><a href="../teaching/index.html">Teaching</a></li>
+    <li><a href="../cv.html">CV</a></li>
+    <li><a href="../news/index.html">News</a></li>
+    <li><a href="../index.html#contact">Contact</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">☰</button>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">☽</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="../index.html">Home</a>
+  <a href="../index.html#about">About</a>
+  <a href="../research.html">Research</a>
+  <a href="../index.html#publications">Publications</a>
+  <a href="../blog/index.html">Blog</a>
+  <a href="../teaching/index.html">Teaching</a>
+  <a href="../cv.html">CV</a>
+  <a href="../news/index.html">News</a>
+  <a href="../index.html#contact">Contact</a>
+</div>
+
+<div class="article-hero">
+  <div class="hero-tags">
+    <span class="hero-tag">Research</span>
+    <span class="hero-tag">Bayesian</span>
+    <span class="hero-tag">Reinforcement Learning</span>
+  </div>
+  <h1 class="article-title">Inference and Dynamic Decision-Making for Deteriorating Systems</h1>
+  <div class="article-meta">
+    <span>📅 February 2023</span>
+    <span>👤 Pablo G. Morato</span>
+    <span>⏱ 7 min read</span>
+  </div>
+</div>
+
+<article>
+
+  <p>When a structural component in an offshore wind farm deteriorates, it rarely does so in isolation. Fatigue cracks at adjacent welded joints share a common environment: the same wave loading, the same corrosion exposure, the same weld quality distribution. This deterioration <em>dependence</em> is physically meaningful — and yet most inspection and maintenance planning methods simply ignore it, treating each component as if it were statistically independent of all others.</p>
+
+  <p>This paper asks: what happens when we take those dependencies seriously? And can we still find near-optimal management policies at the scale of a real structural system?</p>
+
+  <blockquote>
+    "Most methods simplify the problem to the component level, assuming statistical independence among components — primarily driven by the need to tame computational complexity."
+  </blockquote>
+
+  <h2>The Core Problem</h2>
+
+  <p>Managing a deteriorating engineering system, deciding when to inspect, what to repair, and how to allocate a limited maintenance budget, is a sequential decision problem under partial observability. The system state (how damaged is each component right now?) is never fully known. Inspections are costly and provide noisy information. Repairs reduce risk but consume resources. And the consequences of getting it wrong unfold over decades.</p>
+
+  <p>This is formally a <strong>Partially Observable Markov Decision Process (POMDP)</strong>. POMDPs are powerful but notoriously hard to scale. The state space grows exponentially with the number of components, and existing solvers break down well before reaching the size of real infrastructure systems.</p>
+
+  <p>The challenge we set out to address: how do you solve the POMDP at the <em>system level</em>, accounting for both deterioration dependence among components <em>and</em> system-level failure risk, without the state space exploding?</p>
+
+  <h2>The Framework: Bayesian Networks + Deep RL</h2>
+
+  <p>Our approach has two interlocking parts.</p>
+
+  <h3>Part 1 — Inference via Dynamic Bayesian Networks</h3>
+
+  <p>We encode the system's deterioration dynamics as a <strong>factored POMDP</strong>, whose conditional independence structure is captured by a Dynamic Bayesian Network (DBN). Each component's deterioration evolves according to a fatigue crack growth model, and components are coupled through shared <em>hyperparameters</em> representing common-cause influences — for example, a shared initial crack size distribution across a group of structurally similar joints.</p>
+
+  <p>Crucially, this Gaussian hierarchical structure lets us <strong>decouple the joint system state space</strong> into manageable per-component beliefs, conditional on shared random variables. Instead of tracking a joint state that grows as <code>|states|^N</code>, we track per-component beliefs plus a small number of hyperparameter beliefs. For a 10-component system under unequal deterioration correlation, this reduces the state space from <code>930^10</code> (intractable) to roughly <code>6 × 10^7</code> — still large, but now feasible for deep RL.</p>
+
+  <div class="fig">
+    <div class="fig-placeholder">
+      [ Figure: Factored POMDP structure as a Dynamic Bayesian Network ]<br>
+      <em>Deterioration state d_t, deterioration rate τ_t, hyperparameters α, action a_t, observation o_t, reward r_t</em>
+    </div>
+    <figcaption>The factored POMDP represented as a DBN. Component states are conditionally independent given the shared hyperparameters, enabling tractable belief updates at the system level.</figcaption>
+  </div>
+
+  <h3>Part 2 — Policy Optimization via DDMAC</h3>
+
+  <p>For policy optimization, we use a <strong>Deep Decentralized Multi-Agent Actor-Critic (DDMAC)</strong> scheme. Each structural component is assigned an actor network that outputs an inspection/repair decision based on the current belief state. A shared critic network evaluates joint system-level performance, capturing the cost dependencies and system reliability effects that the individual actors cannot see.</p>
+
+  <p>This architecture naturally handles the campaign cost structure common in real infrastructure management, where sending a maintenance vessel to site incurs a fixed cost regardless of how many components are serviced. DDMAC policies learn to cluster interventions efficiently — a behavior that emerges from the cost model rather than being hardcoded.</p>
+
+  <div class="callout">
+    <p class="callout-label">Key insight</p>
+    <p>By formulating the failure risk and cost model at the <strong>system level</strong>, the DDMAC policies implicitly learn the structural importance of each component. A component that is critical to system survival receives more aggressive monitoring — not because we told the policy to prioritize it, but because the reward signal incentivizes it.</p>
+  </div>
+
+  <h2>What the Results Show</h2>
+
+  <p>We tested the framework on two case studies: a 9-out-of-10 redundant system under fatigue deterioration, and a steel frame structure. In both cases, DDMAC policies were compared against optimized heuristic strategies — the kind of rule-based approaches actually used in industry (e.g., inspect every Δ years, repair if crack detected).</p>
+
+  <div class="key-results">
+    <div class="key-result">
+      <div class="key-result-n">10</div>
+      <div class="key-result-label">Structural components managed jointly</div>
+    </div>
+    <div class="key-result">
+      <div class="key-result-n">6×10⁷</div>
+      <div class="key-result-label">States (vs. 930¹⁰ for flat POMDP)</div>
+    </div>
+    <div class="key-result">
+      <div class="key-result-n">&gt;20%</div>
+      <div class="key-result-label">Cost reduction vs. best heuristic</div>
+    </div>
+  </div>
+
+  <p>DDMAC policies consistently outperformed the best heuristic strategies across all correlation levels and cost models. The performance gap was particularly pronounced under <strong>campaign cost structures</strong>, where the ability to coordinate inspections across components pays the highest dividend. Under independent costs, the advantage was more modest — the heuristic becomes a reasonable approximation when actions are decoupled.</p>
+
+  <p>We also showed that DDMAC strategies exhibit interpretable system-aware behavior: when components share a high deterioration correlation, the policy learns to consolidate inspections into coordinated campaigns. When correlation is low, it distributes inspections more evenly. This is not something the heuristic can do — it applies the same rule regardless of the inferred correlation state.</p>
+
+  <h2>Why Component Independence Is a Problem</h2>
+
+  <p>One result stands out as particularly important for practice. When the true environment has high deterioration dependence and the decision-maker <em>ignores</em> it (assuming independence), the resulting policy under-invests in early inspections — because it underestimates how quickly the system can transition from a healthy state to a high-risk state when multiple components deteriorate in concert.</p>
+
+  <p>Conversely, accounting for dependence allows the policy to update beliefs about <em>unobserved</em> components based on what was found during an inspection of their neighbors. A detected crack in one joint raises the inferred probability of damage in correlated joints, even if those joints have not yet been inspected. This is Bayesian inference at work — and it directly translates into smarter, earlier intervention.</p>
+
+  <h2>Limitations and Open Questions</h2>
+
+  <p>The framework requires the correlation structure to be specified a priori, typically from engineering judgment or prior structural analyses. Learning the correlation structure from data remains an open problem. Training times (30–46 hours on a standard workstation) are also non-trivial, limiting online re-planning as new inspection data arrives. Extensions toward online learning and model updating are a natural next step.</p>
+
+  <hr class="divider">
+
+  <div class="author-block">
+    <div class="author-avatar">
+      <img src="../assets/prof_pic.png" alt="Pablo G. Morato">
+    </div>
+    <div>
+      <p class="author-name">Pablo G. Morato</p>
+      <p class="author-role">Senior Researcher, ERA Group · Technical University of Munich</p>
+    </div>
+  </div>
+
+  <div class="cite-block">
+    <p class="cite-label">Cite this work</p>
+    <pre>@article{morato2023inference,
+  title   = {Inference and dynamic decision-making for deteriorating
+             systems with probabilistic dependencies through Bayesian
+             networks and deep reinforcement learning},
+  author  = {Morato, P.G. and Andriotis, C.P. and
+             Papakonstantinou, K.G. and Rigo, P.},
+  journal = {Reliability Engineering \& System Safety},
+  volume  = {235},
+  pages   = {109144},
+  year    = {2023},
+  doi     = {10.1016/j.ress.2023.109144}
+}</pre>
+  </div>
+
+  <div class="post-nav">
+    <a href="index.html">← All posts</a>
+    <a href="https://doi.org/10.1016/j.ress.2023.109144" target="_blank" rel="noopener">Read full paper (DOI) →</a>
+  </div>
+
+</article>
+
+<footer>
+  <p>© 2025 Pablo G. Morato · <a href="../index.html">Home</a> · <a href="index.html">Blog</a> · <a href="https://scholar.google.com/citations?user=-px7BBgAAAAJ" target="_blank" rel="noopener">Google Scholar</a></p>
+</footer>
+
+<script>
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    mobileMenu.classList.toggle('open');
+    hamburger.textContent = mobileMenu.classList.contains('open') ? '✕' : '☰';
+  });
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    mobileMenu.classList.remove('open'); hamburger.textContent = '☰';
+  }));
+  const html = document.documentElement;
+  const toggleBtn = document.getElementById('themeToggle');
+  const saved = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  function setTheme(dark) {
+    html.setAttribute('data-theme', dark ? 'dark' : 'light');
+    toggleBtn.textContent = dark ? '☀' : '☽';
+    localStorage.setItem('theme', dark ? 'dark' : 'light');
+  }
+  setTheme(saved ? saved === 'dark' : prefersDark);
+  toggleBtn.addEventListener('click', () => setTheme(html.getAttribute('data-theme') !== 'dark'));
+</script>
+
+</body>
+</html>

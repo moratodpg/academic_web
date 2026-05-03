@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Research · Pablo G. Morato</title>
+  <meta name="description" content="Research by Pablo G. Morato — probabilistic decision-making, reinforcement learning, Bayesian modeling, and life-cycle management of engineering systems.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚛️</text></svg>">
+  <style>
+    :root {
+      --ink: #1d1d1f;
+      --ink-soft: #6e6e73;
+      --white: #ffffff;
+      --parchment: #f5f5f7;
+      --dark: #1d1d1f;
+      --dark2: #272729;
+      --blue: #0066cc;
+      --blue-bright: #2997ff;
+      --border: rgba(0,0,0,0.08);
+      --r-card: 18px;
+      --r-pill: 980px;
+      --shadow: rgba(0,0,0,0.18) 0 4px 32px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 17px; line-height: 1.47; color: var(--ink);
+      background: var(--white); -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: 48px; display: flex; align-items: center; padding: 0 28px;
+      background: rgba(29,29,31,0.88);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+    }
+    .nav-brand { color: #fff; font-size: 15px; font-weight: 600; letter-spacing: -0.2px; text-decoration: none; flex: 1; }
+    .nav-links { display: flex; gap: 26px; list-style: none; }
+    .nav-links a { color: rgba(255,255,255,0.82); font-size: 13px; text-decoration: none; letter-spacing: -0.1px; transition: color 0.15s; }
+    .nav-links a:hover, .nav-links a.active { color: #fff; }
+    .hamburger { display: none; background: none; border: none; cursor: pointer; color: #fff; font-size: 22px; padding: 4px; }
+    .mobile-menu {
+      display: none; position: fixed; top: 48px; left: 0; right: 0;
+      background: rgba(29,29,31,0.97); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      z-index: 199; padding: 12px 28px 20px; flex-direction: column;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { color: rgba(255,255,255,0.85); font-size: 17px; text-decoration: none; padding: 13px 0; border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .mobile-menu a:last-child { border-bottom: none; }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-block; padding: 11px 24px; border-radius: var(--r-pill);
+      font-size: 16px; font-weight: 400; text-decoration: none; cursor: pointer;
+      border: none; transition: transform 0.1s, background 0.2s; letter-spacing: -0.1px;
+    }
+    .btn:active { transform: scale(0.95); }
+    .btn-ghost { background: transparent; color: var(--blue); border: 1px solid rgba(0,102,204,0.35); }
+    .btn-ghost:hover { background: var(--blue); color: #fff; }
+    .btn-sm { padding: 7px 18px; font-size: 14px; }
+
+    /* ── PAGE HERO ── */
+    .page-hero {
+      background: var(--dark2); color: #fff;
+      padding: 120px 28px 72px;
+    }
+    .page-hero .inner { max-width: 900px; margin: 0 auto; }
+    .page-hero .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blue-bright); margin-bottom: 14px; }
+    .page-hero h1 { font-size: clamp(36px, 5vw, 58px); font-weight: 600; letter-spacing: -0.5px; line-height: 1.05; margin-bottom: 20px; }
+    .page-hero .lead { font-size: clamp(16px, 2vw, 20px); font-weight: 300; color: rgba(255,255,255,0.65); line-height: 1.55; max-width: 640px; }
+
+    /* ── SECTIONS ── */
+    section { padding: 80px 28px; }
+    .inner { max-width: 900px; margin: 0 auto; }
+    .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blue); margin-bottom: 12px; }
+    .section-title { font-size: clamp(26px, 3.5vw, 34px); font-weight: 600; letter-spacing: -0.3px; line-height: 1.1; margin-bottom: 36px; }
+
+    /* ── RESEARCH AREAS ── */
+    #areas { background: var(--parchment); }
+    .areas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 0; }
+    .area-card {
+      padding: 32px 28px 28px;
+      border-top: 2px solid var(--border);
+      transition: border-color 0.2s;
+    }
+    .area-card:hover { border-top-color: var(--blue); }
+    .area-num { display: none; }
+    .area-card h3 { font-size: 17px; font-weight: 600; letter-spacing: -0.15px; margin-bottom: 10px; color: var(--ink); line-height: 1.3; }
+    .area-card p { font-size: 14px; color: var(--ink-soft); line-height: 1.65; }
+
+/* ── PROJECTS ── */
+    #projects { background: var(--white); }
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+    .project-card {
+      border: 1px solid var(--border); border-radius: var(--r-card);
+      padding: 24px 26px; display: flex; flex-direction: column; gap: 10px;
+      transition: box-shadow 0.2s;
+    }
+    .project-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+    [data-theme="dark"] .project-card { background: var(--parchment); border-color: var(--border); }
+    [data-theme="dark"] .project-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+    .project-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+    .project-name { font-size: 16px; font-weight: 600; letter-spacing: -0.1px; color: var(--ink); line-height: 1.3; }
+    .project-period { font-size: 12px; color: var(--ink-soft); white-space: nowrap; padding-top: 2px; flex-shrink: 0; }
+    .project-funder { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--blue); }
+    .project-desc { font-size: 14px; color: var(--ink-soft); line-height: 1.6; flex: 1; }
+    .project-footer { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 2px; }
+    .project-budget { font-size: 13px; font-weight: 600; color: var(--ink); }
+    .project-link { font-size: 13px; color: var(--blue); text-decoration: none; }
+    .project-link:hover { text-decoration: underline; }
+    .project-role { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 9px; border-radius: var(--r-pill); background: rgba(0,102,204,0.1); color: var(--blue); }
+
+    /* ── TALKS ── */
+    #talks { background: var(--parchment); }
+    .talks-list { list-style: none; }
+    .talk-item { padding: 22px 0; border-bottom: 1px solid var(--border); }
+    .talk-item:first-child { border-top: 1px solid var(--border); }
+    .talk-meta { display: flex; gap: 10px; align-items: center; margin-bottom: 6px; }
+    .talk-year { font-size: 12px; font-weight: 600; color: var(--blue); letter-spacing: 0.06em; text-transform: uppercase; }
+    .talk-tag { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 10px; border-radius: var(--r-pill); }
+    .tag-invited    { background: rgba(0,102,204,0.1); color: var(--blue); }
+    .tag-conference { background: rgba(100,60,180,0.1); color: #6030b0; }
+    .talk-title { font-size: 16px; font-weight: 600; letter-spacing: -0.15px; color: var(--ink); margin-bottom: 4px; line-height: 1.35; }
+    .talk-venue { font-size: 14px; color: var(--ink-soft); }
+    .talk-venue a { color: var(--blue); text-decoration: none; }
+    .talk-venue a:hover { text-decoration: underline; }
+    .talk-role { font-style: italic; color: var(--blue); }
+    .talks-note { margin-top: 24px; font-size: 13px; color: var(--ink-soft); }
+    .talks-note code { background: var(--parchment); padding: 1px 6px; border-radius: 5px; font-size: 12px; border: 1px solid var(--border); }
+
+    /* ── VIZ ── */
+    #viz { background: var(--white); }
+    .viz-container { position: relative; }
+    .viz-legend {
+      display: flex; gap: 24px; margin-bottom: 28px; flex-wrap: wrap;
+    }
+    .leg-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-soft); }
+    .leg-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    #researchViz { width: 100%; height: auto; display: block; }
+    .viz-tooltip {
+      position: absolute; pointer-events: none;
+      background: var(--dark2); color: #fff;
+      font-size: 13px; line-height: 1.5;
+      padding: 10px 14px; border-radius: 10px;
+      max-width: 240px; opacity: 0; transition: opacity 0.15s;
+      z-index: 10; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .viz-tooltip.visible { opacity: 1; }
+    .viz-tooltip strong { display: block; margin-bottom: 3px; font-size: 13px; color: #fff; }
+    .viz-tooltip span { color: rgba(255,255,255,0.6); font-size: 12px; }
+
+    /* ── FOOTER ── */
+    footer { background: var(--parchment); padding: 28px; text-align: center; font-size: 13px; color: var(--ink-soft); line-height: 1.8; }
+    footer a { color: var(--ink-soft); text-decoration: none; }
+    footer a:hover { color: var(--blue); }
+
+    /* ── DARK MODE ── */
+    [data-theme="dark"] {
+      --ink: #f0f0f2;
+      --ink-soft: #98989f;
+      --white: #1c1c1e;
+      --parchment: #242426;
+      --dark: #0a0a0b;
+      --dark2: #111113;
+      --blue: #2997ff;
+      --blue-bright: #2997ff;
+      --border: rgba(255,255,255,0.09);
+      --shadow: rgba(0,0,0,0.55) 0 4px 32px;
+    }
+    [data-theme="dark"] body { background: var(--white); color: var(--ink); }
+    [data-theme="dark"] .area-card { border-top-color: var(--border); }
+    [data-theme="dark"] .area-card:hover { border-top-color: var(--blue); }
+    [data-theme="dark"] .talks-note code { background: var(--parchment); border-color: var(--border); }
+
+    /* ── THEME TOGGLE ── */
+    .theme-toggle {
+      background: none; border: none; cursor: pointer;
+      color: rgba(255,255,255,0.7); font-size: 17px;
+      padding: 4px 6px; margin-left: 16px; line-height: 1;
+      transition: color 0.15s; flex-shrink: 0;
+    }
+    .theme-toggle:hover { color: #fff; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 780px) {
+      .nav-links { display: none; }
+      .hamburger { display: block; }
+      section { padding: 60px 20px; }
+    }
+    @media (max-width: 500px) {
+      .areas-grid { grid-template-columns: 1fr; }
+      .pub-count { margin-left: 0; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="index.html" class="nav-brand">Pablo G. Morato</a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="research.html" class="active">Research</a></li>
+    <li><a href="index.html#publications">Publications</a></li>
+    <li><a href="blog/index.html">Blog</a></li>
+    <li><a href="index.html#teaching">Teaching</a></li>
+    <li><a href="cv.html">CV</a></li>
+    <li><a href="index.html#news">News</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">☰</button>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">☽</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">Home</a>
+  <a href="index.html#about">About</a>
+  <a href="research.html">Research</a>
+  <a href="index.html#publications">Publications</a>
+  <a href="blog/index.html">Blog</a>
+  <a href="index.html#teaching">Teaching</a>
+  <a href="cv.html">CV</a>
+  <a href="index.html#news">News</a>
+  <a href="index.html#contact">Contact</a>
+</div>
+
+<!-- PAGE HERO -->
+<div class="page-hero" data-screen-label="Research Hero">
+  <div class="inner">
+    <p class="eyebrow">Research</p>
+    <h1>Probabilistic Methods for<br>Engineering Decision-Making</h1>
+    <p class="lead">Developing data-driven and probabilistic frameworks for risk-informed inspection, monitoring, and maintenance of infrastructure systems under uncertainty.</p>
+  </div>
+</div>
+
+<!-- RESEARCH AREAS -->
+<section id="areas" data-screen-label="Research Areas">
+  <div class="inner">
+    <p class="eyebrow">Focus Areas</p>
+    <h2 class="section-title">Research Interests</h2>
+    <div class="areas-grid">
+      <div class="area-card">
+        <p class="area-num">01</p>
+        <h3>Risk-Based Decision Modeling</h3>
+        <p>Markov decision processes and partially observable MDPs for adaptive inspection, monitoring, and maintenance planning under uncertainty. Safety calibration and risk-informed optimization of deteriorating engineering systems.</p>
+      </div>
+      <div class="area-card">
+        <p class="area-num">02</p>
+        <h3>Multi-Agent &amp; Hierarchical Reinforcement Learning</h3>
+        <p>Multi-agent and hierarchical RL frameworks for scalable, coordinated management of large infrastructure networks. Emphasis on interpretability and policy robustness in safety-critical settings.</p>
+      </div>
+      <div class="area-card">
+        <p class="area-num">03</p>
+        <h3>Bayesian Modeling &amp; Active Learning</h3>
+        <p>Bayesian neural networks and dynamic Bayesian networks for probabilistic inference from engineering data. Active learning methods for efficient experiment design and surrogate-model-based reliability analysis.</p>
+      </div>
+      <div class="area-card">
+        <p class="area-num">04</p>
+        <h3>Structural Reliability &amp; Safety Calibration</h3>
+        <p>Risk-based inspection planning, fatigue and fracture reliability, and safety calibration for deteriorating structural components under realistic loading and environmental conditions.</p>
+      </div>
+      <div class="area-card">
+        <p class="area-num">05</p>
+        <h3>Infrastructure Life-Cycle Management</h3>
+        <p>Long-horizon, risk-aware optimization of networked and deteriorating systems, spanning offshore wind farms, critical civil infrastructure, and urban building stock.</p>
+      </div>
+      <div class="area-card">
+        <p class="area-num">06</p>
+        <h3>Structural Integrity &amp; Wind Energy Systems</h3>
+        <p>Structural health monitoring, virtual load monitoring, and integrity management for offshore wind substructures. Application of probabilistic methods to fatigue assessment under operational and environmental uncertainty.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+<section id="talks" data-screen-label="Talks">
+  <div class="inner">
+    <p class="eyebrow">Invited &amp; Conference Talks</p>
+    <h2 class="section-title">Talks</h2>
+    <ul class="talks-list">
+
+      <li class="talk-item">
+        <div class="talk-meta">
+          <span class="talk-year">2026</span>
+          <span class="talk-tag tag-invited">Invited</span>
+        </div>
+        <p class="talk-title">Optimization under Uncertainty — MS139</p>
+        <p class="talk-venue"><a href="https://wccm-eccomas2026.org/" target="_blank" rel="noopener">WCCM-ECCOMAS 2026</a> · Munich, Germany · Jul 2026 <span class="talk-role">(Co-organizer)</span></p>
+      </li>
+
+      <li class="talk-item">
+        <div class="talk-meta">
+          <span class="talk-year">2023</span>
+          <span class="talk-tag tag-conference">Conference</span>
+        </div>
+        <p class="talk-title">IMP-MARL: A Suite of Environments for Large-Scale Infrastructure Management via Multi-Agent Reinforcement Learning</p>
+        <p class="talk-venue"><a href="https://neurips.cc/" target="_blank" rel="noopener">NeurIPS 2023</a> · New Orleans, USA · Dec 2023</p>
+      </li>
+
+      <li class="talk-item">
+        <div class="talk-meta">
+          <span class="talk-year">2023</span>
+          <span class="talk-tag tag-conference">Conference</span>
+        </div>
+        <p class="talk-title">Interpretation and Analysis of Deep Reinforcement Learning Driven Inspection and Maintenance Policies</p>
+        <p class="talk-venue"><a href="https://icasp14.com/" target="_blank" rel="noopener">ICASP14</a> · Dublin, Ireland · Jul 2023</p>
+      </li>
+
+      <li class="talk-item">
+        <div class="talk-meta">
+          <span class="talk-year">2022</span>
+          <span class="talk-tag tag-conference">Conference</span>
+        </div>
+        <p class="talk-title">Managing Offshore Wind Turbines through Markov Decision Processes and Dynamic Bayesian Networks</p>
+        <p class="talk-venue">ICOSSAR 2022 · Shanghai, China · Jun 2022</p>
+      </li>
+
+      <li class="talk-item">
+        <div class="talk-meta">
+          <span class="talk-year">2019</span>
+          <span class="talk-tag tag-conference">Conference</span>
+        </div>
+        <p class="talk-title">POMDP Based Maintenance Optimization of Offshore Wind Substructures including Monitoring</p>
+        <p class="talk-venue">ICASP13 · Seoul, South Korea · May 2019</p>
+      </li>
+
+    </ul>
+    <p class="talks-note">Add further talks by copying a <code>&lt;li class="talk-item"&gt;</code> block above.</p>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" data-screen-label="Projects">
+  <div class="inner">
+    <p class="eyebrow">Selected Projects</p>
+    <h2 class="section-title">Research Projects</h2>
+    <div class="projects-grid">
+
+      <div class="project-card">
+        <div class="project-header">
+          <p class="project-name">PhairywinD</p>
+          <span class="project-period">2020–2025</span>
+        </div>
+        <p class="project-funder">Belgian Energy Transition Fund (FPS Economy)</p>
+        <p class="project-desc">Probabilistic framework for fatigue reliability, inspection planning, and life-cycle management of offshore wind support structures under realistic loading and environmental conditions.</p>
+        <div class="project-footer">
+          <span class="project-budget">€3.9M</span>
+          <span class="project-role">Co-PI</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <p class="project-name">MAXWind</p>
+          <span class="project-period">2020–2025</span>
+        </div>
+        <p class="project-funder">Belgian Energy Transition Fund (FPS Economy)</p>
+        <p class="project-desc">Maximizing the operational lifetime of offshore wind turbines through advanced structural health monitoring, virtual load sensing, and data-driven integrity assessment methods.</p>
+        <div class="project-footer">
+          <span class="project-budget">€2.2M</span>
+          <span class="project-role">Co-PI</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <p class="project-name">DE-CIST</p>
+          <span class="project-period">2023–2025</span>
+        </div>
+        <p class="project-funder">Municipality of Rotterdam · Google</p>
+        <p class="project-desc">City-scale building energy retrofit planning tool combining Bayesian neural networks and uncertainty quantification to prioritize interventions across Rotterdam's building stock.</p>
+        <div class="project-footer">
+          <span class="project-role">Researcher</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <p class="project-name">IMP-MARL</p>
+          <span class="project-period">2023</span>
+        </div>
+        <p class="project-funder">Open-source · DTU / ULiège</p>
+        <p class="project-desc">Open-source benchmark suite of cooperative multi-agent RL environments for large-scale infrastructure management planning, motivated by offshore wind inspection and maintenance problems.</p>
+        <div class="project-footer">
+          <a href="https://github.com/moratodpg/imp_marl" target="_blank" rel="noopener" class="project-link">GitHub →</a>
+          <a href="https://arxiv.org/abs/2306.11551" target="_blank" rel="noopener" class="project-link">arXiv →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- VISUALIZATION -->
+<section id="viz" data-screen-label="Research Paths">
+  <div class="inner">
+    <p class="eyebrow">Research Trajectory</p>
+    <h2 class="section-title">Research Paths</h2>
+    <div class="viz-container">
+
+      <!-- Legend -->
+      <div class="viz-legend">
+        <span class="leg-item"><span class="leg-dot" style="background:#0066cc"></span>Decision &amp; Control</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#7c3aed"></span>Probabilistic Modeling</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#0d9488"></span>Applications</span>
+      </div>
+
+      <!-- SVG diagram -->
+      <svg id="researchViz" viewBox="0 0 860 420" xmlns="http://www.w3.org/2000/svg" aria-label="Research paths diagram"></svg>
+
+      <!-- Tooltip -->
+      <div class="viz-tooltip" id="vizTooltip"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 Pablo G. Morato · <a href="https://www.cee.ed.tum.de/era/era-group/" target="_blank" rel="noopener">ERA Group, TUM</a></p>
+  <p style="margin-top:6px;">
+    <a href="index.html">Home</a> ·
+    <a href="https://scholar.google.com/citations?user=-px7BBgAAAAJ" target="_blank" rel="noopener">Scholar</a> ·
+    <a href="https://orcid.org/0000-0002-2744-0650" target="_blank" rel="noopener">ORCID</a> ·
+    <a href="https://github.com/moratodpg" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="https://linkedin.com/in/pablomorato" target="_blank" rel="noopener">LinkedIn</a>
+  </p>
+</footer>
+
+<script>
+  /* ── Dark mode (runs before paint) ── */
+  (function() {
+    const saved = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (saved === 'dark' || (!saved && prefersDark)) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
+
+<script>
+  /* ── Nav mobile ── */
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    mobileMenu.classList.toggle('open');
+    hamburger.textContent = mobileMenu.classList.contains('open') ? '✕' : '☰';
+  });
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    mobileMenu.classList.remove('open'); hamburger.textContent = '☰';
+  }));
+
+  /* ── Dark mode toggle ── */
+  const html = document.documentElement;
+  const toggleBtn = document.getElementById('themeToggle');
+  const saved = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  function setTheme(dark) {
+    html.setAttribute('data-theme', dark ? 'dark' : 'light');
+    toggleBtn.textContent = dark ? '☀' : '☽';
+    localStorage.setItem('theme', dark ? 'dark' : 'light');
+  }
+
+  setTheme(saved ? saved === 'dark' : prefersDark);
+  toggleBtn.addEventListener('click', () => setTheme(html.getAttribute('data-theme') !== 'dark'));
+</script>
+
+<script>
+  /* ── Research Paths Visualization ── */
+  (function() {
+    const svg = document.getElementById('researchViz');
+    const NS = 'http://www.w3.org/2000/svg';
+
+    // ── Data ──────────────────────────────────────────────────────────────
+    // Three threads; each node has { year, label, detail, x (0–1), y (0–1) }
+    const YEARS = [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025];
+
+    const THREADS = [
+      {
+        id: 'decision',
+        color: '#0066cc',
+        label: 'Decision & Control',
+        nodes: [
+          { year: 2018, label: 'POMDP\nInspection', detail: 'Point-Based POMDP for offshore wind substructure inspection planning', y: 0.18 },
+          { year: 2019, label: 'POMDP +\nMonitoring', detail: 'POMDP-based maintenance with structural monitoring integration', y: 0.18 },
+          { year: 2021, label: 'MDP +\nDyn. BN', detail: 'Optimal inspection & maintenance via MDPs and Dynamic Bayesian Networks (PhD Thesis)', y: 0.18 },
+          { year: 2022, label: 'MDP for\nOffshore Wind', detail: 'Managing offshore wind turbines through MDPs and DBNs (ICOSSAR 2022)', y: 0.18 },
+          { year: 2023, label: 'Deep RL\nPolicies', detail: 'Inference & dynamic decision-making via Bayesian networks and deep RL (RESS 2023)', y: 0.18 },
+          { year: 2023, label: 'RL Policy\nInterpretation', detail: 'Interpretation of deep RL-driven inspection & maintenance policies (ICASP14)', y: 0.27 },
+          { year: 2023, label: 'IMP-MARL', detail: 'Multi-agent RL environments for large-scale infrastructure management (arXiv 2023)', y: 0.10 },
+        ]
+      },
+      {
+        id: 'probabilistic',
+        color: '#7c3aed',
+        label: 'Probabilistic Modeling',
+        nodes: [
+          { year: 2019, label: 'Fatigue\nReliability', detail: 'Remaining fatigue life prediction via strain measurement & oceanographic data (Marine Structures)', y: 0.52 },
+          { year: 2020, label: 'Info Value\nMonitoring', detail: 'Information value-based optimization of structural & environmental monitoring (Renewable Energy)', y: 0.52 },
+          { year: 2022, label: 'Structural\nReliability', detail: 'Inspection & maintenance planning integrating fatigue failure with BNs and MDPs', y: 0.52 },
+          { year: 2023, label: 'Active\nLearning', detail: 'Active learning for reliability analysis via variance-enhanced PC-Kriging surrogates (arXiv)', y: 0.52 },
+          { year: 2024, label: 'Bayesian\nNeural Nets', detail: 'Farm-wide virtual load monitoring via Bayesian Neural Networks (SHM Journal)', y: 0.52 },
+          { year: 2025, label: 'Batch BAL', detail: 'ConBatch-BAL: Batch Bayesian active learning under budget constraints (arXiv 2025)', y: 0.52 },
+          { year: 2025, label: 'Exploration–\nExploitation', detail: 'Balancing exploration–exploitation in active learning for surrogate reliability analysis (arXiv 2025)', y: 0.44 },
+        ]
+      },
+      {
+        id: 'applications',
+        color: '#0d9488',
+        label: 'Applications',
+        nodes: [
+          { year: 2019, label: 'Miter\nGates', detail: 'Optimal inspection & repair scheduling for miter lock gates (ICE Maritime Engineering)', y: 0.82 },
+          { year: 2021, label: 'Offshore\nWind Life-Cycle', detail: 'Life-cycle management of offshore wind structures under ship collision events', y: 0.82 },
+          { year: 2022, label: 'Virtual Load\nMonitoring', detail: 'Probabilistic virtual load monitoring of offshore wind substructures (ISOPE)', y: 0.82 },
+          { year: 2023, label: 'Crack\nPropagation', detail: 'Numerical fatigue modeling of interacting cracks in offshore wind connections (Marine Structures)', y: 0.82 },
+          { year: 2024, label: 'Climate\nLife-Cycle', detail: 'Life-cycle risk-based decision-making in a changing climate (ASCE book chapter)', y: 0.82 },
+          { year: 2024, label: 'Wind\nUncertainty', detail: 'Uncertainty quantification of wind turbine fatigue lifetime predictions through binning (JPCS)', y: 0.90 },
+        ]
+      }
+    ];
+
+    // ── Layout ────────────────────────────────────────────────────────────
+    const W = 860, H = 420;
+    const PAD_L = 28, PAD_R = 28, PAD_T = 20, PAD_B = 36;
+    const chartW = W - PAD_L - PAD_R;
+    const chartH = H - PAD_T - PAD_B;
+
+    function xOfYear(year) {
+      const min = YEARS[0], max = YEARS[YEARS.length - 1];
+      return PAD_L + ((year - min) / (max - min)) * chartW;
+    }
+    function yOfFrac(f) { return PAD_T + f * chartH; }
+
+    function el(tag, attrs, text) {
+      const e = document.createElementNS(NS, tag);
+      for (const [k, v] of Object.entries(attrs || {})) e.setAttribute(k, v);
+      if (text !== undefined) e.textContent = text;
+      return e;
+    }
+
+    // ── Defs: arrowhead + glow filters ────────────────────────────────────
+    const defs = el('defs');
+    THREADS.forEach(t => {
+      const marker = el('marker', { id: `arrow-${t.id}`, markerWidth: '8', markerHeight: '8', refX: '6', refY: '3', orient: 'auto' });
+      marker.appendChild(el('path', { d: 'M0,0 L0,6 L8,3 z', fill: t.color, opacity: '0.7' }));
+      defs.appendChild(marker);
+
+      const filter = el('filter', { id: `glow-${t.id}`, x: '-40%', y: '-40%', width: '180%', height: '180%' });
+      const fe = el('feGaussianBlur', { stdDeviation: '3', result: 'blur' });
+      const feMerge = el('feMerge');
+      feMerge.appendChild(el('feMergeNode', { in: 'blur' }));
+      feMerge.appendChild(el('feMergeNode', { in: 'SourceGraphic' }));
+      filter.appendChild(fe);
+      filter.appendChild(feMerge);
+      defs.appendChild(filter);
+    });
+    svg.appendChild(defs);
+
+    // ── Year axis ─────────────────────────────────────────────────────────
+    const axisG = el('g', { class: 'axis' });
+    // Baseline
+    axisG.appendChild(el('line', {
+      x1: PAD_L, y1: H - PAD_B + 12, x2: W - PAD_R, y2: H - PAD_B + 12,
+      stroke: 'rgba(128,128,128,0.2)', 'stroke-width': '1'
+    }));
+    YEARS.forEach(y => {
+      const x = xOfYear(y);
+      axisG.appendChild(el('line', {
+        x1: x, y1: PAD_T, x2: x, y2: H - PAD_B + 12,
+        stroke: 'rgba(128,128,128,0.1)', 'stroke-width': '1', 'stroke-dasharray': '4 4'
+      }));
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      axisG.appendChild(el('text', {
+        x, y: H - PAD_B + 26, 'text-anchor': 'middle',
+        'font-size': '11', fill: isDark ? '#6e6e73' : '#9ca3af',
+        'font-family': '-apple-system, sans-serif',
+        'font-weight': '600', 'letter-spacing': '0.04em'
+      }, String(y)));
+    });
+    svg.appendChild(axisG);
+
+    // ── Draw threads ──────────────────────────────────────────────────────
+    const tooltip = document.getElementById('vizTooltip');
+    const vizRect = () => document.getElementById('researchViz').getBoundingClientRect();
+
+    THREADS.forEach(thread => {
+      const g = el('g', { class: `thread-${thread.id}` });
+
+      // Sort nodes by year
+      const nodes = [...thread.nodes].sort((a, b) => a.year - b.year);
+
+      // Draw path through nodes
+      const pts = nodes.map(n => [xOfYear(n.year), yOfFrac(n.y)]);
+
+      // Smooth cubic bezier through points
+      if (pts.length >= 2) {
+        let d = `M ${pts[0][0]} ${pts[0][1]}`;
+        for (let i = 1; i < pts.length; i++) {
+          const cpX = (pts[i-1][0] + pts[i][0]) / 2;
+          d += ` C ${cpX} ${pts[i-1][1]}, ${cpX} ${pts[i][1]}, ${pts[i][0]} ${pts[i][1]}`;
+        }
+        // Background glow
+        g.appendChild(el('path', {
+          d, fill: 'none', stroke: thread.color,
+          'stroke-width': '3', opacity: '0.15',
+          filter: `url(#glow-${thread.id})`,
+          'stroke-linecap': 'round', 'stroke-linejoin': 'round'
+        }));
+        // Main line
+        g.appendChild(el('path', {
+          d, fill: 'none', stroke: thread.color,
+          'stroke-width': '2', opacity: '0.55',
+          'stroke-linecap': 'round', 'stroke-linejoin': 'round',
+          'marker-end': `url(#arrow-${thread.id})`
+        }));
+      }
+
+      // Draw nodes
+      nodes.forEach(n => {
+        const x = xOfYear(n.year);
+        const y = yOfFrac(n.y);
+        const nodeG = el('g', { class: 'viz-node', style: 'cursor:pointer' });
+
+        // Outer ring (hover state)
+        const ring = el('circle', { cx: x, cy: y, r: '12', fill: 'none', stroke: thread.color, 'stroke-width': '1.5', opacity: '0', class: 'node-ring' });
+        nodeG.appendChild(ring);
+
+        // Dot
+        const dot = el('circle', { cx: x, cy: y, r: '5', fill: thread.color, opacity: '0.9' });
+        nodeG.appendChild(dot);
+
+        // Label (split on \n)
+        const lines = n.label.split('\n');
+        const labelY = n.y < 0.5 ? y - 14 : y + 16;
+        const anchor = 'middle';
+        lines.forEach((line, i) => {
+          const offset = n.y < 0.5
+            ? -(lines.length - 1 - i) * 13
+            : i * 13;
+          const isDarkLabel = document.documentElement.getAttribute('data-theme') === 'dark';
+          nodeG.appendChild(el('text', {
+            x, y: labelY + offset,
+            'text-anchor': anchor,
+            'font-size': '10.5', fill: isDarkLabel ? '#98989f' : '#4b5563',
+            'font-family': '-apple-system, sans-serif',
+            'font-weight': '500',
+            'pointer-events': 'none'
+          }, line));
+        });
+
+        // Interaction
+        nodeG.addEventListener('mouseenter', (e) => {
+          ring.setAttribute('opacity', '1');
+          dot.setAttribute('r', '6');
+          tooltip.innerHTML = `<strong>${n.label.replace('\n', ' ')}</strong><span>${n.detail}</span>`;
+          tooltip.classList.add('visible');
+          positionTooltip(e);
+        });
+        nodeG.addEventListener('mousemove', positionTooltip);
+        nodeG.addEventListener('mouseleave', () => {
+          ring.setAttribute('opacity', '0');
+          dot.setAttribute('r', '5');
+          tooltip.classList.remove('visible');
+        });
+
+        g.appendChild(nodeG);
+      });
+
+      svg.appendChild(g);
+    });
+
+    function positionTooltip(e) {
+      const container = document.querySelector('.viz-container');
+      const cr = container.getBoundingClientRect();
+      const tx = e.clientX - cr.left + 14;
+      const ty = e.clientY - cr.top - 10;
+      const tw = tooltip.offsetWidth || 240;
+      const left = tx + tw > cr.width ? tx - tw - 28 : tx;
+      tooltip.style.left = left + 'px';
+      tooltip.style.top = ty + 'px';
+    }
+
+    // ── Convergence annotation ─────────────────────────────────────────────
+    const convX = xOfYear(2025) + 4;
+    const annotG = el('g', { opacity: '0.45' });
+    const isDarkAnnot = document.documentElement.getAttribute('data-theme') === 'dark';
+    annotG.appendChild(el('line', {
+      x1: convX, y1: PAD_T + 20, x2: convX, y2: H - PAD_B - 10,
+      stroke: isDarkAnnot ? '#6e6e73' : '#1d1d1f', 'stroke-width': '1', 'stroke-dasharray': '3 3'
+    }));
+    svg.appendChild(annotG);
+
+  })();
+</script>
+
+</body>
+</html>

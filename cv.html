@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CV · Pablo G. Morato</title>
+  <meta name="description" content="Curriculum vitae of Pablo G. Morato — Senior Researcher at TUM's Engineering Risk Analysis Group.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚛️</text></svg>">
+  <style>
+    :root {
+      --ink: #1d1d1f; --ink-soft: #6e6e73; --white: #ffffff;
+      --parchment: #f5f5f7; --dark2: #272729;
+      --blue: #0066cc; --blue-bright: #2997ff;
+      --border: rgba(0,0,0,0.08); --r-card: 18px; --r-pill: 980px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 17px; line-height: 1.47; color: var(--ink); background: var(--white); -webkit-font-smoothing: antialiased; }
+
+    /* ── DARK MODE ── */
+    [data-theme="dark"] {
+      --ink: #f0f0f2; --ink-soft: #98989f; --white: #1c1c1e;
+      --parchment: #242426; --dark2: #111113;
+      --blue: #2997ff; --blue-bright: #2997ff;
+      --border: rgba(255,255,255,0.09);
+    }
+    [data-theme="dark"] body { background: var(--white); color: var(--ink); }
+    [data-theme="dark"] .entry:hover { background: var(--parchment); }
+    [data-theme="dark"] .skill-chip { border-color: var(--border); }
+    [data-theme="dark"] .award-item { border-color: var(--border); }
+    [data-theme="dark"] .download-btn { border-color: rgba(41,151,255,0.4); color: var(--blue-bright); }
+    [data-theme="dark"] .download-btn:hover { background: var(--blue); color: #fff; }
+    [data-theme="dark"] .member-item { border-color: var(--border); }
+
+    /* ── NAV ── */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: 48px; display: flex; align-items: center; padding: 0 28px; background: rgba(29,29,31,0.88); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+    .nav-brand { color: #fff; font-size: 15px; font-weight: 600; letter-spacing: -0.2px; text-decoration: none; flex: 1; }
+    .nav-links { display: flex; gap: 26px; list-style: none; }
+    .nav-links a { color: rgba(255,255,255,0.82); font-size: 13px; text-decoration: none; letter-spacing: -0.1px; transition: color 0.15s; }
+    .nav-links a:hover, .nav-links a.active { color: #fff; }
+    .hamburger { display: none; background: none; border: none; cursor: pointer; color: #fff; font-size: 22px; padding: 4px; }
+    .mobile-menu { display: none; position: fixed; top: 48px; left: 0; right: 0; background: rgba(29,29,31,0.97); backdrop-filter: blur(24px); z-index: 199; padding: 12px 28px 20px; flex-direction: column; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { color: rgba(255,255,255,0.85); font-size: 17px; text-decoration: none; padding: 13px 0; border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .mobile-menu a:last-child { border-bottom: none; }
+    .theme-toggle { background: none; border: none; cursor: pointer; color: rgba(255,255,255,0.7); font-size: 17px; padding: 4px 6px; margin-left: 16px; line-height: 1; transition: color 0.15s; flex-shrink: 0; }
+    .theme-toggle:hover { color: #fff; }
+    @media (max-width: 780px) { .nav-links { display: none; } .hamburger { display: block; } }
+
+    /* ── PAGE HERO ── */
+    .page-hero { background: var(--dark2); color: #fff; padding: 112px 28px 64px; }
+    .hero-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
+    .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blue-bright); margin-bottom: 12px; }
+    .page-hero h1 { font-size: clamp(32px, 5vw, 52px); font-weight: 600; letter-spacing: -0.4px; line-height: 1.05; margin-bottom: 8px; }
+    .page-hero .subtitle { font-size: 18px; font-weight: 300; color: rgba(255,255,255,0.6); }
+    .download-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 22px; border-radius: var(--r-pill);
+      font-size: 14px; font-weight: 500; text-decoration: none;
+      color: rgba(255,255,255,0.85); border: 1px solid rgba(255,255,255,0.3);
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .download-btn:hover { background: #fff; color: var(--dark2); border-color: #fff; }
+
+    /* ── MAIN ── */
+    main { max-width: 900px; margin: 0 auto; padding: 0 28px 96px; }
+
+    /* ── SECTION ── */
+    .section { padding: 60px 0 0; }
+    .section-label { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blue); margin-bottom: 8px; }
+    .section-title { font-size: clamp(20px, 3vw, 28px); font-weight: 600; letter-spacing: -0.2px; margin-bottom: 24px; line-height: 1.15; }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 60px 0 0; }
+
+    /* ── TIMELINE ENTRIES ── */
+    .entries { list-style: none; }
+    .entry {
+      display: grid; grid-template-columns: 110px 1fr;
+      gap: 0 24px; padding: 18px 0;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+    .entry:first-child { border-top: 1px solid var(--border); }
+    .entry:hover { background: var(--parchment); margin: 0 -12px; padding-left: 12px; padding-right: 12px; border-radius: 10px; border-color: transparent; }
+    .entry-year { font-size: 13px; color: var(--ink-soft); font-variant-numeric: tabular-nums; padding-top: 2px; }
+    .entry-title { font-size: 16px; font-weight: 600; color: var(--ink); letter-spacing: -0.1px; line-height: 1.3; margin-bottom: 3px; }
+    .entry-sub { font-size: 14px; color: var(--ink-soft); margin-bottom: 4px; }
+    .entry-desc { font-size: 14px; color: var(--ink-soft); line-height: 1.6; margin-top: 4px; }
+
+    /* ── GRANTS ── */
+    .grant-list { list-style: none; }
+    .grant-item { display: flex; gap: 20px; padding: 14px 0; border-bottom: 1px solid var(--border); align-items: baseline; }
+    .grant-item:first-child { border-top: 1px solid var(--border); }
+    .grant-year { font-size: 13px; color: var(--blue); font-weight: 600; white-space: nowrap; min-width: 88px; }
+    .grant-body { font-size: 15px; line-height: 1.5; }
+    .grant-body strong { font-weight: 600; }
+    .grant-body span { color: var(--ink-soft); font-size: 13px; }
+
+    /* ── AWARDS ── */
+    .awards-list { list-style: none; }
+    .award-item { display: flex; gap: 20px; padding: 14px 0; border-bottom: 1px solid var(--border); align-items: baseline; }
+    .award-item:first-child { border-top: 1px solid var(--border); }
+    .award-year { font-size: 13px; color: var(--blue); font-weight: 600; white-space: nowrap; min-width: 44px; }
+    .award-text { font-size: 15px; line-height: 1.5; }
+    .award-text span { color: var(--ink-soft); }
+
+    /* ── SERVICE ── */
+    .service-group-label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); margin: 24px 0 12px; }
+    .service-group-label:first-child { margin-top: 0; }
+    .service-list { list-style: none; }
+    .service-item { padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 15px; line-height: 1.5; color: var(--ink-soft); }
+    .service-item:first-child { border-top: 1px solid var(--border); }
+    .service-item strong { color: var(--ink); font-weight: 600; }
+
+    /* ── MEMBERSHIPS ── */
+    .member-list { list-style: none; }
+    .member-item { display: flex; gap: 20px; padding: 12px 0; border-bottom: 1px solid var(--border); align-items: baseline; }
+    .member-item:first-child { border-top: 1px solid var(--border); }
+    .member-year { font-size: 13px; color: var(--ink-soft); white-space: nowrap; min-width: 72px; }
+    .member-text { font-size: 15px; line-height: 1.5; }
+
+    /* ── SKILLS ── */
+    .skills-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .skill-chip { font-size: 13px; color: var(--ink-soft); padding: 4px 12px; border-radius: var(--r-pill); border: 1px solid var(--border); }
+
+    /* ── FOOTER ── */
+    footer { background: var(--parchment); padding: 28px; text-align: center; font-size: 13px; color: var(--ink-soft); line-height: 1.8; }
+    footer a { color: var(--ink-soft); text-decoration: none; }
+    footer a:hover { color: var(--blue); }
+
+    @media (max-width: 640px) {
+      .entry { grid-template-columns: 1fr; gap: 2px; }
+      .entry-year { font-size: 12px; margin-bottom: 2px; }
+      main { padding: 0 20px 64px; }
+      .hero-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-brand">Pablo G. Morato</a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="research.html">Research</a></li>
+    <li><a href="index.html#publications">Publications</a></li>
+    <li><a href="blog/index.html">Blog</a></li>
+    <li><a href="teaching/index.html">Teaching</a></li>
+    <li><a href="cv.html" class="active">CV</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">☰</button>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">☽</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">Home</a>
+  <a href="index.html#about">About</a>
+  <a href="research.html">Research</a>
+  <a href="index.html#publications">Publications</a>
+  <a href="blog/index.html">Blog</a>
+  <a href="teaching/index.html">Teaching</a>
+  <a href="cv.html">CV</a>
+  <a href="index.html#contact">Contact</a>
+</div>
+
+<div class="page-hero">
+  <div class="hero-inner">
+    <div>
+      <p class="eyebrow">Curriculum Vitae</p>
+      <h1>Pablo G. Morato</h1>
+      <p class="subtitle">Senior Researcher · Technical University of Munich</p>
+    </div>
+    <a href="assets/cv.pdf" download class="download-btn">
+      ↓ Download PDF
+    </a>
+  </div>
+</div>
+
+<main>
+
+  <!-- EDUCATION -->
+  <div class="section" id="education">
+    <p class="section-label">Academic Background</p>
+    <h2 class="section-title">Education</h2>
+    <ul class="entries">
+      <li class="entry">
+        <span class="entry-year">2017–2021</span>
+        <div>
+          <p class="entry-title">Ph.D. in Engineering Sciences</p>
+          <p class="entry-sub">University of Liège, Belgium</p>
+          <p class="entry-desc">Thesis: <em>Optimal Inspection and Maintenance Planning for Deteriorating Structures via Markov Decision Processes and Deep Reinforcement Learning</em></p>
+        </div>
+      </li>
+      <li class="entry">
+        <span class="entry-year">2015–2017</span>
+        <div>
+          <p class="entry-title">European Master in Advanced Ship Design and Offshore Structures</p>
+          <p class="entry-sub">University of Liège, Belgium · École Centrale de Nantes, France</p>
+        </div>
+      </li>
+      <li class="entry">
+        <span class="entry-year">2014–2015</span>
+        <div>
+          <p class="entry-title">M.Sc. in Sustainable Engineering: Offshore Renewable Energy</p>
+          <p class="entry-sub">University of Strathclyde, UK</p>
+        </div>
+      </li>
+      <li class="entry">
+        <span class="entry-year">2010–2014</span>
+        <div>
+          <p class="entry-title">B.Eng. in Maritime Engineering</p>
+          <p class="entry-sub">Polytechnic University of Madrid, Spain</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- RESEARCH EXPERIENCE -->
+  <div class="section" id="experience">
+    <p class="section-label">Academic Positions</p>
+    <h2 class="section-title">Research Experience</h2>
+    <ul class="entries">
+      <li class="entry">
+        <span class="entry-year">2025–present</span>
+        <div>
+          <p class="entry-title">Senior Researcher</p>
+          <p class="entry-sub">Technical University of Munich, Germany</p>
+          <p class="entry-desc">Develop hierarchical MARL and safe-RL methods for risk-informed infrastructure management. Supervision of PhD/MSc researchers.</p>
+        </div>
+      </li>
+      <li class="entry">
+        <span class="entry-year">2023–2025</span>
+        <div>
+          <p class="entry-title">Postdoctoral Researcher</p>
+          <p class="entry-sub">Delft University of Technology, Netherlands</p>
+          <p class="entry-desc">Implemented a city-scale building retrofit planning tool (DE-CIST, Municipality of Rotterdam; funded by Google).</p>
+        </div>
+      </li>
+      <li class="entry">
+        <span class="entry-year">2023</span>
+        <div>
+          <p class="entry-title">Postdoctoral Researcher</p>
+          <p class="entry-sub">Technical University of Denmark, Denmark</p>
+          <p class="entry-desc">Released an open-source environment to benchmark scalability in cooperative multi-agent reinforcement learning.</p>
+        </div>
+      </li>
+      <li class="entry">
+        <span class="entry-year">2021–2023</span>
+        <div>
+          <p class="entry-title">Postdoctoral Researcher</p>
+          <p class="entry-sub">University of Liège, Belgium</p>
+          <p class="entry-desc">Built virtual sensing for wind-farm monitoring and numerical models for structural integrity of offshore wind turbines.</p>
+        </div>
+      </li>
+      <li class="entry">
+        <span class="entry-year">2019–2020</span>
+        <div>
+          <p class="entry-title">Visiting Scholar</p>
+          <p class="entry-sub">Pennsylvania State University, USA</p>
+          <p class="entry-desc">Formulated efficient Bayesian updating models for systems with correlated components (Advisor: K. G. Papakonstantinou).</p>
+        </div>
+      </li>
+      <li class="entry">
+        <span class="entry-year">2017–2021</span>
+        <div>
+          <p class="entry-title">Research Engineer</p>
+          <p class="entry-sub">University of Liège, Belgium</p>
+          <p class="entry-desc">Developed reinforcement-learning decision-support algorithms for inspection and maintenance optimization of offshore wind farms.</p>
+        </div>
+      </li>
+      <li class="entry">
+        <span class="entry-year">2016</span>
+        <div>
+          <p class="entry-title">Visiting Scholar</p>
+          <p class="entry-sub">University of Michigan, USA</p>
+          <p class="entry-desc">Validated an analytical model for ship dynamic transversal instability using computational fluid dynamics (Advisor: A. Troesch).</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- GRANTS -->
+  <div class="section" id="grants">
+    <p class="section-label">Funding</p>
+    <h2 class="section-title">Grants &amp; Funding</h2>
+    <ul class="grant-list">
+      <li class="grant-item">
+        <span class="grant-year">2020–2025</span>
+        <p class="grant-body"><strong>PhairywinD</strong> (Co-PI) · Belgian Energy Transition Fund (FPS Economy) <span>· €3.9M</span></p>
+      </li>
+      <li class="grant-item">
+        <span class="grant-year">2020–2025</span>
+        <p class="grant-body"><strong>MAXWind</strong> (Co-PI) · Belgian Energy Transition Fund (FPS Economy) <span>· €2.2M</span></p>
+      </li>
+      <li class="grant-item">
+        <span class="grant-year">2023</span>
+        <p class="grant-body"><strong>Tailwind</strong> (Co-PI) · Horizon Europe</p>
+      </li>
+      <li class="grant-item">
+        <span class="grant-year">2017–2021</span>
+        <p class="grant-body"><strong>Personal Grant</strong> · National Fund for Scientific Research (FNRS-FRIA), Belgium</p>
+      </li>
+      <li class="grant-item">
+        <span class="grant-year">2015–2017</span>
+        <p class="grant-body"><strong>EMShip Scholarship</strong> · University of Liège, Belgium</p>
+      </li>
+      <li class="grant-item">
+        <span class="grant-year">2014–2015</span>
+        <p class="grant-body"><strong>Offshore Renewable Energy Britannia</strong> · University of Strathclyde, UK</p>
+      </li>
+      <li class="grant-item">
+        <span class="grant-year">2010–2015</span>
+        <p class="grant-body"><strong>Grant for Undergraduate Studies</strong> · Ministry of Education, Spain</p>
+      </li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- AWARDS -->
+  <div class="section" id="awards">
+    <p class="section-label">Recognition</p>
+    <h2 class="section-title">Awards &amp; Honors</h2>
+    <ul class="awards-list">
+      <li class="award-item">
+        <span class="award-year">2025</span>
+        <p class="award-text">Top Cited Paper · <span>Structural Safety Journal</span></p>
+      </li>
+      <li class="award-item">
+        <span class="award-year">2024</span>
+        <p class="award-text">Selected Contribution · <span>GNI Symposium &amp; Expo on AI for the Built World</span></p>
+      </li>
+      <li class="award-item">
+        <span class="award-year">2021</span>
+        <p class="award-text">Paper of the Month (Infrastructure) · <span>BAM Abteilung Bauwerkssicherheit, Germany</span></p>
+      </li>
+      <li class="award-item">
+        <span class="award-year">2017</span>
+        <p class="award-text">Best Master Thesis Award · <span>EMShip, University of Liège</span></p>
+      </li>
+      <li class="award-item">
+        <span class="award-year">2015</span>
+        <p class="award-text">Graduated with Distinction · <span>University of Strathclyde, UK</span></p>
+      </li>
+      <li class="award-item">
+        <span class="award-year">2014</span>
+        <p class="award-text">Highest Grade in Dissertation (10/10) · <span>Polytechnic University of Madrid</span></p>
+      </li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SERVICE -->
+  <div class="section" id="service">
+    <p class="section-label">Community</p>
+    <h2 class="section-title">Service &amp; Leadership</h2>
+
+    <p class="service-group-label">Organization</p>
+    <ul class="service-list">
+      <li class="service-item"><strong>WCCM-ECCOMAS 2026</strong> — Co-organized Mini-Symposium "Optimization under Uncertainty"</li>
+      <li class="service-item"><strong>EMI Conference 2023–2025</strong> — Co-organized Mini-Symposium "Probabilistic assessment, data-driven inference, and optimization for decision-making under uncertainty"</li>
+      <li class="service-item"><strong>Wind Energy Science Conference 2023</strong> — Co-organized Mini-Symposium "Structural integrity assessment and life cycle management of wind farms"</li>
+    </ul>
+
+    <p class="service-group-label" style="margin-top:28px;">Reviewer</p>
+    <ul class="service-list">
+      <li class="service-item">Reliability Engineering &amp; System Safety (RESS)</li>
+      <li class="service-item">Transactions on Machine Learning Research (TMLR)</li>
+      <li class="service-item">Conference on Neural Information Processing Systems (NeurIPS)</li>
+      <li class="service-item">International Conference on Learning Representations (ICLR)</li>
+      <li class="service-item">Journal of Risk and Uncertainty Analysis, ASCE</li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MEMBERSHIPS -->
+  <div class="section" id="memberships">
+    <p class="section-label">Affiliations</p>
+    <h2 class="section-title">Professional Memberships</h2>
+    <ul class="member-list">
+      <li class="member-item">
+        <span class="member-year">2025–present</span>
+        <p class="member-text">Member, European Talent Academy (ETA) · Technical University of Munich</p>
+      </li>
+      <li class="member-item">
+        <span class="member-year">2021–present</span>
+        <p class="member-text">Associate Member, American Society of Civil Engineers (ASCE)</p>
+      </li>
+      <li class="member-item">
+        <span class="member-year">2020–present</span>
+        <p class="member-text">Member, International Association for Life-Cycle Civil Engineering (IALCCE)</p>
+      </li>
+      <li class="member-item">
+        <span class="member-year">2017–present</span>
+        <p class="member-text">Member, European Energy Research Alliance (EERA)</p>
+      </li>
+      <li class="member-item">
+        <span class="member-year">2015–present</span>
+        <p class="member-text">Associate Member, Royal Institution of Naval Architects (RINA)</p>
+      </li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SKILLS -->
+  <div class="section" id="skills" style="padding-bottom:0;">
+    <p class="section-label">Technical</p>
+    <h2 class="section-title">Skills</h2>
+    <div class="skills-row">
+      <span class="skill-chip">Python</span>
+      <span class="skill-chip">MATLAB</span>
+      <span class="skill-chip">C++</span>
+      <span class="skill-chip">LaTeX</span>
+      <span class="skill-chip">SLURM</span>
+      <span class="skill-chip">Unix / Linux</span>
+      <span class="skill-chip">English — proficient</span>
+      <span class="skill-chip">Spanish — native</span>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p>© 2025 Pablo G. Morato · <a href="index.html">Home</a> · <a href="assets/cv.pdf" download>Download CV (PDF)</a> · <a href="/cdn-cgi/l/email-protection#205041424c4f0e4d4f5241544f6054554d0e4445"><span class="__cf_email__" data-cfemail="aedecfccc2c180c3c1dccfdac1eedadbc380cacb">[email&#160;protected]</span></a></p>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    mobileMenu.classList.toggle('open');
+    hamburger.textContent = mobileMenu.classList.contains('open') ? '✕' : '☰';
+  });
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    mobileMenu.classList.remove('open'); hamburger.textContent = '☰';
+  }));
+  const html = document.documentElement;
+  const toggleBtn = document.getElementById('themeToggle');
+  const saved = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  function setTheme(dark) {
+    html.setAttribute('data-theme', dark ? 'dark' : 'light');
+    toggleBtn.textContent = dark ? '☀' : '☽';
+    localStorage.setItem('theme', dark ? 'dark' : 'light');
+  }
+  setTheme(saved ? saved === 'dark' : prefersDark);
+  toggleBtn.addEventListener('click', () => setTheme(html.getAttribute('data-theme') !== 'dark'));
+</script>
+
+</body>
+</html>

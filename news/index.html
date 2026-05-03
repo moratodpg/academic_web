@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>News, Pablo G. Morato</title>
+  <meta name="description" content="News and updates from Pablo G. Morato, new papers, talks, software releases, and academic updates.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚛️</text></svg>">
+  <style>
+    :root {
+      --ink: #1d1d1f; --ink-soft: #6e6e73; --white: #ffffff;
+      --parchment: #f5f5f7; --dark2: #272729;
+      --blue: #0066cc; --blue-bright: #2997ff;
+      --border: rgba(0,0,0,0.08); --r-card: 18px; --r-pill: 980px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 17px; line-height: 1.47; color: var(--ink); background: var(--white); -webkit-font-smoothing: antialiased; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: 48px; display: flex; align-items: center; padding: 0 28px; background: rgba(29,29,31,0.88); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+    .nav-brand { color: #fff; font-size: 15px; font-weight: 600; letter-spacing: -0.2px; text-decoration: none; flex: 1; }
+    .nav-links { display: flex; gap: 26px; list-style: none; }
+    .nav-links a { color: rgba(255,255,255,0.82); font-size: 13px; text-decoration: none; letter-spacing: -0.1px; transition: color 0.15s; }
+    .nav-links a:hover, .nav-links a.active { color: #fff; }
+    .hamburger { display: none; background: none; border: none; cursor: pointer; color: #fff; font-size: 22px; padding: 4px; }
+    .mobile-menu { display: none; position: fixed; top: 48px; left: 0; right: 0; background: rgba(29,29,31,0.97); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); z-index: 199; padding: 12px 28px 20px; flex-direction: column; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { color: rgba(255,255,255,0.85); font-size: 17px; text-decoration: none; padding: 13px 0; border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .mobile-menu a:last-child { border-bottom: none; }
+    .theme-toggle { background: none; border: none; cursor: pointer; color: rgba(255,255,255,0.7); font-size: 17px; padding: 4px 6px; margin-left: 16px; line-height: 1; transition: color 0.15s; flex-shrink: 0; }
+    .theme-toggle:hover { color: #fff; }
+    @media (max-width: 780px) { .nav-links { display: none; } .hamburger { display: block; } }
+
+    .page-hero { background: var(--dark2); color: #fff; padding: 96px 28px 64px; text-align: center; }
+    .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blue-bright); margin-bottom: 12px; }
+    .page-hero h1 { font-size: clamp(32px, 5vw, 52px); font-weight: 600; letter-spacing: -0.4px; line-height: 1.05; margin-bottom: 14px; }
+    .page-hero p { font-size: 18px; font-weight: 300; color: rgba(255,255,255,0.65); max-width: 480px; margin: 0 auto; line-height: 1.5; }
+
+    main { max-width: 760px; margin: 0 auto; padding: 64px 28px 80px; }
+
+    /* FILTER ROW */
+    .filter-row { display: flex; gap: 10px; margin-bottom: 44px; flex-wrap: wrap; }
+    .filter-btn { padding: 6px 18px; border-radius: var(--r-pill); font-size: 13px; cursor: pointer; border: 1px solid var(--border); background: var(--white); color: var(--ink-soft); transition: all 0.15s; }
+    .filter-btn.active, .filter-btn:hover { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+    /* YEAR GROUPS */
+    .year-group { margin-bottom: 48px; }
+    .year-group.hidden { display: none; }
+    .year-heading {
+      font-size: 13px; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--ink-soft);
+      margin-bottom: 0; padding-bottom: 12px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    /* NEWS ITEMS */
+    .news-list { list-style: none; }
+    .news-item {
+      display: flex; gap: 24px; padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: baseline;
+    }
+    .news-item.hidden { display: none; }
+    .news-date { font-size: 13px; color: var(--ink-soft); white-space: nowrap; min-width: 72px; font-variant-numeric: tabular-nums; }
+    .news-body { flex: 1; }
+    .news-tag {
+      display: inline-block; font-size: 11px; font-weight: 600;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      padding: 2px 9px; border-radius: var(--r-pill); margin-bottom: 6px;
+    }
+    .tag-paper      { background: rgba(0,150,80,0.1);  color: #007040; }
+    .tag-software   { background: rgba(100,60,180,0.1); color: #6030b0; }
+    .tag-talk       { background: rgba(180,100,0,0.1);  color: #a05800; }
+    .tag-award      { background: rgba(0,102,204,0.1);  color: var(--blue); }
+    .tag-other      { background: rgba(110,110,115,0.1);color: var(--ink-soft); }
+    .news-text { font-size: 16px; color: var(--ink); line-height: 1.5; }
+    .news-text a { color: var(--blue); text-decoration: none; }
+    .news-text a:hover { text-decoration: underline; }
+
+    /* ADD NOTE */
+    .add-note { margin-top: 52px; padding: 22px 26px; background: var(--parchment); border-radius: var(--r-card); border-left: 3px solid var(--blue); }
+    .add-note h3 { font-size: 15px; font-weight: 600; margin-bottom: 7px; }
+    .add-note p { font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
+    .add-note code { font-family: "SF Mono", Menlo, Monaco, monospace; font-size: 13px; background: rgba(0,0,0,0.06); padding: 2px 6px; border-radius: 4px; }
+
+    footer { background: var(--parchment); padding: 28px; text-align: center; font-size: 13px; color: var(--ink-soft); line-height: 1.8; }
+    footer a { color: var(--ink-soft); text-decoration: none; }
+    footer a:hover { color: var(--blue); }
+
+    @media (max-width: 500px) { main { padding: 48px 20px 64px; } .news-item { flex-direction: column; gap: 6px; } }
+  </style>
+</head>
+<body>
+
+<nav id="navbar">
+  <a href="../index.html" class="nav-brand">Pablo G. Morato</a>
+  <ul class="nav-links">
+    <li><a href="../index.html#about">About</a></li>
+    <li><a href="../research.html">Research</a></li>
+    <li><a href="../index.html#publications">Publications</a></li>
+    <li><a href="../blog/index.html">Blog</a></li>
+    <li><a href="../teaching/index.html">Teaching</a></li>
+    <li><a href="../cv.html">CV</a></li>
+    <li><a href="../news/index.html" class="active">News</a></li>
+    <li><a href="../index.html#contact">Contact</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">☰</button>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">☽</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="../index.html">Home</a>
+  <a href="../index.html#about">About</a>
+  <a href="../research.html">Research</a>
+  <a href="../index.html#publications">Publications</a>
+  <a href="../blog/index.html">Blog</a>
+  <a href="../teaching/index.html">Teaching</a>
+  <a href="../cv.html">CV</a>
+  <a href="../news/index.html">News</a>
+  <a href="../index.html#contact">Contact</a>
+</div>
+
+<div class="page-hero">
+  <p class="eyebrow">Updates</p>
+  <h1>News</h1>
+  <p>Papers, talks, software releases, and other academic updates.</p>
+</div>
+
+<main>
+
+  <div class="filter-row">
+    <button class="filter-btn active" data-tag="all">All</button>
+    <button class="filter-btn" data-tag="software">Software</button>
+    <button class="filter-btn" data-tag="talk">Talks</button>
+    <button class="filter-btn" data-tag="other">Milestones</button>
+  </div>
+
+  <!-- ── 2025 ─────────────────────────────────────────────────────────── -->
+  <div class="year-group" data-year="2025">
+    <p class="year-heading">2025</p>
+    <ul class="news-list">
+      <li class="news-item" data-tag="other">
+        <span class="news-date">2025</span>
+        <div class="news-body">
+          <span class="news-tag tag-other">Update</span>
+          <p class="news-text">Add news items here, talks, software releases, awards, or other milestones.</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ── 2024 ─────────────────────────────────────────────────────────── -->
+  <div class="year-group" data-year="2024">
+    <p class="year-heading">2024</p>
+    <ul class="news-list">
+      <li class="news-item" data-tag="talk">
+        <span class="news-date">2024</span>
+        <div class="news-body">
+          <span class="news-tag tag-talk">Conference</span>
+          <p class="news-text">Presented at ISOPE 2024: Propagation of interacting cracks in offshore wind welded structures through numerical analysis.</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ── 2023 ─────────────────────────────────────────────────────────── -->
+  <div class="year-group" data-year="2023">
+    <p class="year-heading">2023</p>
+    <ul class="news-list">
+      <li class="news-item" data-tag="software">
+        <span class="news-date">Jun 2023</span>
+        <div class="news-body">
+          <span class="news-tag tag-software">Software</span>
+          <p class="news-text"><a href="https://github.com/moratodpg/imp_marl" target="_blank" rel="noopener">IMP-MARL</a> released, open-source suite of cooperative MARL environments for large-scale infrastructure management planning. <a href="https://arxiv.org/abs/2306.11551" target="_blank" rel="noopener">arXiv →</a></p>
+        </div>
+      </li>
+      <li class="news-item" data-tag="talk">
+        <span class="news-date">2023</span>
+        <div class="news-body">
+          <span class="news-tag tag-talk">Conference</span>
+          <p class="news-text">Presented at ICASP14, Dublin: Interpretation and analysis of deep reinforcement learning driven inspection and maintenance policies for engineering systems.</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ── 2022 ─────────────────────────────────────────────────────────── -->
+  <div class="year-group" data-year="2022">
+    <p class="year-heading">2022</p>
+    <ul class="news-list">
+      <li class="news-item" data-tag="talk">
+        <span class="news-date">2022</span>
+        <div class="news-body">
+          <span class="news-tag tag-talk">Conference</span>
+          <p class="news-text">Presented at ICOSSAR 2022, Shanghai: Managing offshore wind turbines through Markov decision processes and dynamic Bayesian networks.</p>
+        </div>
+      </li>
+      <li class="news-item" data-tag="talk">
+        <span class="news-date">2022</span>
+        <div class="news-body">
+          <span class="news-tag tag-talk">Conference</span>
+          <p class="news-text">Presented at ISOPE 2022: Probabilistic virtual load monitoring of offshore wind substructures, a supervised learning approach.</p>
+        </div>
+      </li>
+      <li class="news-item" data-tag="talk">
+        <span class="news-date">2022</span>
+        <div class="news-body">
+          <span class="news-tag tag-talk">Conference</span>
+          <p class="news-text">Presented at OMAE 2022: Inspection and maintenance planning for offshore wind support structures, modelling reliability and inspection costs at the system level.</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ── 2021 ─────────────────────────────────────────────────────────── -->
+  <div class="year-group" data-year="2021">
+    <p class="year-heading">2021</p>
+    <ul class="news-list">
+      <li class="news-item" data-tag="other">
+        <span class="news-date">2021</span>
+        <div class="news-body">
+          <span class="news-tag tag-other">PhD</span>
+          <p class="news-text">PhD thesis defended at Université de Liège: <em>Optimal Inspection and Maintenance Planning for Deteriorating Structures via Markov Decision Processes and Deep Reinforcement Learning. Application to Offshore Wind Substructures.</em></p>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ── 2019 ─────────────────────────────────────────────────────────── -->
+  <div class="year-group" data-year="2019">
+    <p class="year-heading">2019</p>
+    <ul class="news-list">
+      <li class="news-item" data-tag="talk">
+        <span class="news-date">2019</span>
+        <div class="news-body">
+          <span class="news-tag tag-talk">Conference</span>
+          <p class="news-text">Presented at ICASP13, Seoul: POMDP based maintenance optimization of offshore wind substructures including monitoring.</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="add-note">
+    <h3>📝 How to add a news item</h3>
+    <p>Copy any <code>&lt;li class="news-item"&gt;</code> block, set <code>data-tag</code> to <code>paper</code>, <code>software</code>, <code>talk</code>, or <code>other</code>, update the date and text, and place it at the top of the correct year group. Also add the item to the 3-item preview in <code>index.html</code> if it's recent.</p>
+  </div>
+
+</main>
+
+<footer>
+  <p>© 2025 Pablo G. Morato · <a href="../index.html">Home</a> · <a href="mailto:pablo.morato@tum.de">pablo.morato@tum.de</a></p>
+</footer>
+
+<script>
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const tag = btn.dataset.tag;
+
+      document.querySelectorAll('.year-group').forEach(group => {
+        const items = group.querySelectorAll('.news-item');
+        let anyVisible = false;
+        items.forEach(item => {
+          const match = tag === 'all' || item.dataset.tag === tag;
+          item.classList.toggle('hidden', !match);
+          if (match) anyVisible = true;
+        });
+        group.classList.toggle('hidden', !anyVisible);
+      });
+    });
+  });
+</script>
+<script>
+  /* ── Nav + Dark mode ── */
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    mobileMenu.classList.toggle('open');
+    hamburger.textContent = mobileMenu.classList.contains('open') ? '✕' : '☰';
+  });
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    mobileMenu.classList.remove('open'); hamburger.textContent = '☰';
+  }));
+  const html = document.documentElement;
+  const toggleBtn = document.getElementById('themeToggle');
+  const saved = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  function setTheme(dark) {
+    html.setAttribute('data-theme', dark ? 'dark' : 'light');
+    toggleBtn.textContent = dark ? '☀' : '☽';
+    localStorage.setItem('theme', dark ? 'dark' : 'light');
+  }
+  setTheme(saved ? saved === 'dark' : prefersDark);
+  toggleBtn.addEventListener('click', () => setTheme(html.getAttribute('data-theme') !== 'dark'));
+</script>
+
+</body>
+</html>

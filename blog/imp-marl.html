@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IMP-MARL: Benchmarking Multi-Agent RL for Infrastructure Management, Pablo G. Morato</title>
+  <meta name="description" content="Introducing IMP-MARL, a suite of cooperative MARL environments for large-scale infrastructure management planning, motivated by offshore wind inspection problems.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚛️</text></svg>">
+  <style>
+    :root {
+      --ink: #1d1d1f; --ink-soft: #6e6e73; --white: #ffffff;
+      --parchment: #f5f5f7; --dark2: #272729;
+      --blue: #0066cc; --blue-bright: #2997ff;
+      --border: rgba(0,0,0,0.08); --r-card: 14px; --r-pill: 980px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 17px; line-height: 1.47; color: var(--ink); background: var(--white); -webkit-font-smoothing: antialiased; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: 48px; display: flex; align-items: center; padding: 0 28px; background: rgba(29,29,31,0.88); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+    .nav-brand { color: #fff; font-size: 15px; font-weight: 600; letter-spacing: -0.2px; text-decoration: none; flex: 1; }
+    .nav-back { color: rgba(255,255,255,0.7); font-size: 13px; text-decoration: none; transition: color 0.15s; }
+    .nav-back:hover { color: #fff; }
+
+    /* ARTICLE HERO */
+    .article-hero {
+      background: var(--dark2); color: #fff;
+      padding: 96px 28px 72px; text-align: center;
+    }
+    .hero-tags { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
+    .hero-tag { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--blue-bright); padding: 4px 14px; border-radius: var(--r-pill); border: 1px solid rgba(41,151,255,0.35); }
+    .article-title { font-size: clamp(26px, 4.5vw, 48px); font-weight: 600; letter-spacing: -0.4px; line-height: 1.08; margin-bottom: 20px; max-width: 720px; margin-left: auto; margin-right: auto; }
+    .article-meta { font-size: 14px; color: rgba(255,255,255,0.45); display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+    .article-meta span { display: flex; align-items: center; gap: 5px; }
+
+    /* ARTICLE BODY */
+    article { max-width: 680px; margin: 0 auto; padding: 64px 28px 80px; }
+
+    article h2 { font-size: 26px; font-weight: 600; letter-spacing: -0.25px; margin: 48px 0 16px; line-height: 1.2; }
+    article h3 { font-size: 20px; font-weight: 600; letter-spacing: -0.15px; margin: 36px 0 12px; }
+    article p { margin-bottom: 20px; }
+    article p:last-child { margin-bottom: 0; }
+    article a { color: var(--blue); text-decoration: none; }
+    article a:hover { text-decoration: underline; }
+    article strong { font-weight: 600; }
+    article em { font-style: italic; }
+    article ul, article ol { margin: 0 0 20px 24px; }
+    article li { margin-bottom: 8px; line-height: 1.55; }
+    article blockquote {
+      margin: 32px 0; padding: 20px 24px;
+      border-left: 3px solid var(--blue);
+      background: var(--parchment);
+      border-radius: 0 var(--r-card) var(--r-card) 0;
+      font-size: 18px; font-weight: 300; line-height: 1.55; color: var(--ink);
+    }
+    article code {
+      font-family: "SF Mono", Menlo, Monaco, monospace;
+      font-size: 14px; background: rgba(0,0,0,0.05);
+      padding: 2px 7px; border-radius: 5px;
+    }
+    article pre {
+      background: #1d1d1f; color: #e8e8ed;
+      border-radius: var(--r-card); padding: 24px;
+      overflow-x: auto; margin: 28px 0;
+    }
+    article pre code { background: none; padding: 0; font-size: 14px; color: inherit; }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+    .callout {
+      background: rgba(0,102,204,0.06); border: 1px solid rgba(0,102,204,0.18);
+      border-radius: var(--r-card); padding: 20px 24px; margin: 28px 0;
+    }
+    .callout-label { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--blue); margin-bottom: 8px; }
+    .callout p { margin-bottom: 0; font-size: 15px; }
+
+    /* FIGURE placeholder */
+    .fig {
+      margin: 36px 0; border-radius: var(--r-card);
+      overflow: hidden; border: 1px solid var(--border);
+    }
+    .fig-placeholder {
+      background: var(--parchment); padding: 48px 24px;
+      text-align: center; font-family: "SF Mono", Menlo, monospace;
+      font-size: 13px; color: var(--ink-soft); line-height: 1.8;
+    }
+    .fig figcaption { padding: 14px 18px; font-size: 13px; color: var(--ink-soft); background: var(--white); border-top: 1px solid var(--border); }
+
+    /* AUTHOR + CITATION */
+    .author-block {
+      margin-top: 56px; padding: 28px;
+      background: var(--parchment); border-radius: var(--r-card);
+      display: flex; gap: 20px; align-items: center;
+    }
+    .author-avatar { width: 56px; height: 56px; border-radius: 50%; overflow: hidden; flex-shrink: 0; }
+    .author-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .author-name { font-weight: 600; font-size: 16px; margin-bottom: 3px; }
+    .author-role { font-size: 13px; color: var(--ink-soft); }
+
+    .cite-block {
+      margin-top: 32px; padding: 20px 24px;
+      background: var(--parchment); border-radius: var(--r-card);
+    }
+    .cite-label { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 10px; }
+    .cite-block pre { background: none; color: var(--ink); padding: 0; font-size: 13px; white-space: pre-wrap; margin: 0; }
+
+    .post-nav { display: flex; gap: 16px; margin-top: 48px; flex-wrap: wrap; }
+    .post-nav a { color: var(--blue); text-decoration: none; font-size: 15px; }
+    .post-nav a:hover { text-decoration: underline; }
+
+    footer { background: var(--parchment); padding: 28px; text-align: center; font-size: 13px; color: var(--ink-soft); line-height: 1.8; }
+    footer a { color: var(--ink-soft); text-decoration: none; }
+    footer a:hover { color: var(--blue); }
+
+    @media (max-width: 600px) { article { padding: 48px 20px 64px; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="../index.html" class="nav-brand">Pablo G. Morato</a>
+  <a href="index.html" class="nav-back">← Blog</a>
+</nav>
+
+<div class="article-hero">
+  <div class="hero-tags">
+    <span class="hero-tag">Research</span>
+    <span class="hero-tag">MARL</span>
+    <span class="hero-tag">Infrastructure</span>
+  </div>
+  <h1 class="article-title">IMP-MARL: Benchmarking Multi-Agent RL for Infrastructure Management</h1>
+  <div class="article-meta">
+    <span>📅 June 2023</span>
+    <span>👤 Pablo G. Morato</span>
+    <span>⏱ 6 min read</span>
+  </div>
+</div>
+
+<article>
+
+  <p>Large-scale infrastructure management, think fleets of offshore wind turbines, bridge networks, or pipeline systems, poses a fundamental challenge: how do you allocate limited inspection and maintenance resources across many interdependent components, over long time horizons, under deep uncertainty?</p>
+
+  <p>This is not just an engineering problem. It is a sequential decision-making problem that sits squarely at the intersection of probabilistic modeling, control theory, and modern machine learning. And it is hard: the state space is enormous, partial observability is the rule rather than the exception, and the cost of a bad decision can be catastrophic.</p>
+
+  <blockquote>
+    "Infrastructure management at scale is a natural testbed for cooperative MARL, agents must coordinate, share resources, and make decisions whose consequences unfold over decades."
+  </blockquote>
+
+  <h2>The Problem with Existing Benchmarks</h2>
+
+  <p>Reinforcement learning research has benefited enormously from shared, reproducible benchmarks, Atari, MuJoCo, StarCraft II. But for infrastructure management, no such community resource existed. Researchers would formulate bespoke environments, making it nearly impossible to compare methods or track progress.</p>
+
+  <p>At the same time, the multi-agent RL (MARL) community had developed sophisticated cooperative algorithms, QMIX, MAPPO, FACMAC, without access to testbeds grounded in real engineering problems. The result: a gap between methods and applications.</p>
+
+  <p><strong>IMP-MARL</strong> was designed to close that gap.</p>
+
+  <div class="fig">
+    <div class="fig-placeholder">
+      [ Figure: IMP-MARL environment overview, agents, state transitions, reward structure ]<br>
+      <em>Replace with actual figure from the paper</em>
+    </div>
+    <figcaption>Overview of the IMP-MARL environment structure. Each agent manages a subset of structural components; agents share a global budget and receive rewards based on system-level reliability.</figcaption>
+  </div>
+
+  <h2>What IMP-MARL Provides</h2>
+
+  <p>The suite consists of several cooperative MARL environments of increasing complexity, all motivated by inspection and maintenance planning for offshore wind support structures:</p>
+
+  <ul>
+    <li><strong>k-out-of-n systems:</strong> Simplified environments where a system fails if more than a threshold of components fail. Good for fast prototyping and ablations.</li>
+    <li><strong>Correlated deterioration:</strong> Components share common-cause deterioration mechanisms, requiring agents to reason about dependencies.</li>
+    <li><strong>Campaign-based inspection:</strong> Inspection campaigns constrain which components can be inspected simultaneously, introducing combinatorial resource allocation.</li>
+    <li><strong>Offshore wind farm:</strong> The most realistic setting, with real structural parameters, fatigue loading, and inspection cost models drawn from engineering practice.</li>
+  </ul>
+
+  <div class="callout">
+    <p class="callout-label">Key Design Principle</p>
+    <p>Every environment in IMP-MARL has a tractable POMDP solution for small instances, allowing ground-truth comparison. As the number of components grows, exact solutions become intractable, this is where MARL methods must demonstrate their value.</p>
+  </div>
+
+  <h2>Benchmarking Cooperative MARL Methods</h2>
+
+  <p>We evaluated several state-of-the-art cooperative MARL algorithms on IMP-MARL, alongside two engineering baselines (heuristic inspection rules commonly used in practice):</p>
+
+  <ul>
+    <li>IQL (Independent Q-Learning), decentralized baseline</li>
+    <li>QMIX, centralized training, decentralized execution</li>
+    <li>MAPPO, multi-agent proximal policy optimization</li>
+    <li>FACMAC, factored multi-agent centralized policy gradients</li>
+  </ul>
+
+  <p>Results showed that while MARL methods outperform heuristic rules, there remains a significant gap to the POMDP optimum on small instances. Closing this gap, especially as the number of agents grows, remains an open research problem.</p>
+
+  <h2>Why This Matters</h2>
+
+  <p>Infrastructure management is not a niche application. Globally, aging infrastructure, the energy transition, and climate change are driving urgent demand for smarter, more adaptive asset management. Multi-agent RL offers a promising path, but only if the research community can develop and validate methods on realistic, shared benchmarks.</p>
+
+  <p>IMP-MARL is our contribution to that infrastructure. The codebase is fully open-source, documented, and extensible. We welcome contributions from both the RL and engineering communities.</p>
+
+  <hr class="divider">
+
+  <div class="author-block">
+    <div class="author-avatar">
+      <img src="../assets/prof_pic.png" alt="Pablo G. Morato">
+    </div>
+    <div>
+      <p class="author-name">Pablo G. Morato</p>
+      <p class="author-role">Senior Researcher, ERA Group · Technical University of Munich</p>
+    </div>
+  </div>
+
+  <div class="cite-block">
+    <p class="cite-label">Cite this work</p>
+    <pre>@article{leroy2023imp,
+  title   = {IMP-MARL: a Suite of Environments for Large-scale
+             Infrastructure Management Planning via MARL},
+  author  = {Leroy, Pascal and Morato, Pablo G and Pisane, Jonathan
+             and Kolios, Athanasios and Ernst, Damien},
+  journal = {arXiv preprint arXiv:2306.11551},
+  year    = {2023}
+}</pre>
+  </div>
+
+  <div class="post-nav">
+    <a href="index.html">← All posts</a>
+    <a href="https://arxiv.org/abs/2306.11551" target="_blank" rel="noopener">Read full paper on arXiv →</a>
+    <a href="https://github.com/moratodpg/imp_marl" target="_blank" rel="noopener">GitHub repository →</a>
+  </div>
+
+</article>
+
+<footer>
+  <p>© 2025 Pablo G. Morato · <a href="../index.html">Home</a> · <a href="index.html">Blog</a> · <a href="https://scholar.google.com/citations?user=-px7BBgAAAAJ" target="_blank" rel="noopener">Google Scholar</a></p>
+</footer>
+
+</body>
+</html>
